@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import {formatDate, formatTweet} from "../utils/helpers";
 import {FaHeart, FaReply, FaRegHeart} from 'react-icons/fa';
-import {handleToggleLikes} from "../actions/shared";
-
+import {handleToggleLikes} from "../actions/tweets";
+import {Link, withRouter} from 'react-router-dom'
 
 class Tweet extends Component {
-    toParent = (e, i) => {
-
+    toParent = (e, id) => {
+        this.props.history.push(`/tweet/${id}`)
     };
 
     handleLike = (e) => {
@@ -25,10 +25,10 @@ class Tweet extends Component {
 
         if (tweet === null) return <div>Tweet doesn't exist</div>
         const {
-            name, avatar, timestamp, text, hasLiked, likes, replies, parent
+            name, avatar, timestamp, text, hasLiked, likes, replies, parent, id
         } = tweet;
         return (
-            <div className='tweet'>
+            <Link to={`/tweet/${id}`} className='tweet'>
                 <img src={avatar} alt={name} className='avatar'/>
                 <div className='tweet-info'>
                     <div>
@@ -52,7 +52,7 @@ class Tweet extends Component {
                         <span>{likes !== 0 && likes}</span>
                     </div>
                 </div>
-            </div>
+            </Link>
         )
     }
 }
@@ -66,4 +66,4 @@ const propsToState = ({authedUser, users, tweets}, ownProps) => {
     }
 };
 
-export default connect(propsToState)(Tweet);
+export default withRouter(connect(propsToState)(Tweet));

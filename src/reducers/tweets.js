@@ -1,4 +1,4 @@
-import {RECEIVE_TWEETS, TOGGLE_TWEET_LIKE} from '../actions/tweets';
+import {RECEIVE_TWEETS, TOGGLE_TWEET_LIKE, ADD_TWEET} from '../actions/tweets';
 
 
 export const tweets = (state = {}, action) => {
@@ -17,6 +17,23 @@ export const tweets = (state = {}, action) => {
                         ? state[action.payload.id].likes.filter((id) => id !== action.payload.authedUser)
                         : state[action.payload.id].likes.concat([action.payload.authedUser])
                 }
+            };
+        case ADD_TWEET:
+            const {tweet} = action;
+            let replyingTo = {};
+            if (tweet.replyingTo !== null) {
+                replyingTo = {
+                    [tweet.replyingTo]: {
+                        ...state[tweet.replyingTo],
+                        replies: state[tweet.replyingTo].replies.concat([tweet.id])
+                    }
+                }
+            }
+
+            return {
+                ...state,
+                [tweet.id]: tweet,
+                ...replyingTo
             };
         default:
             return state

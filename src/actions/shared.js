@@ -1,9 +1,16 @@
-import {getInitialData, saveLikeToggle} from '../utils/api';
+import {getInitialData} from '../utils/api';
 import {receiveUsers, setAuthenticatedUser} from "./users";
-import {receiveTweets, toggleTweetLikes} from "./tweets";
+import {RECEIVE_TWEETS} from "./tweets";
 import {showLoading, hideLoading} from 'react-redux-loading';
 
 const authUserId = 'dan_abramov';
+
+const receiveTweets = (tweets) => {
+    return {
+        type: RECEIVE_TWEETS,
+        tweets
+    }
+};
 
 export const handleInitialData = () => (dispatch) => {
     dispatch(showLoading());
@@ -15,12 +22,3 @@ export const handleInitialData = () => (dispatch) => {
     })
 };
 
-export const handleToggleLikes = (info) => (dispatch) => {
-    // optimistic update
-    dispatch(toggleTweetLikes(info));
-    return saveLikeToggle(info).catch((e) => {
-        console.warn('Server allow', e);
-        // reset if error happens
-        dispatch(toggleTweetLikes(info));
-    })
-};
